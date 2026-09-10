@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NASM Sales — Jan to Sep 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1A18; --deep:#102523; --panel:#16302D; --line:#23433F;
+  --paper:#F1F4F3; --mute:#8FA9A4; --soft:#B9CFCB;
+  --gold:#E8B33C; --teal:#4EC3A5; --rose:#E2674A; --violet:#8E7CE0;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--ink); color:var(--paper);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  padding:0 0 80px;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 34px;border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(30px,4.6vw,52px);font-weight:800;letter-spacing:-.028em;line-height:1.04}
+.hero .sub{color:var(--soft);margin-top:12px;max-width:62ch;font-size:16px}
+.hero .stamp{color:var(--mute);font-size:13px;margin-top:18px}
+
+/* ---------- filters ---------- */
+.filters{
+  position:sticky;top:0;z-index:20;background:rgba(11,26,24,.93);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  padding:14px 0;margin-bottom:34px;
+}
+.frow{display:flex;gap:26px;flex-wrap:wrap;align-items:center}
+.fgroup{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.flab{color:var(--mute);font-size:12.5px;font-weight:500;margin-right:2px}
+.chip{
+  border:1px solid var(--line);background:transparent;color:var(--soft);
+  font:inherit;font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.chip:hover{border-color:var(--teal);color:var(--paper)}
+.chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#08221D;font-weight:600}
+.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.reset{margin-left:auto;color:var(--mute);font-size:13px;background:none;border:none;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:3px}
+.reset:hover{color:var(--paper)}
+
+/* ---------- kpi ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:40px}
+.kpi{background:var(--deep);padding:20px 20px 18px}
+.kpi .k{color:var(--mute);font-size:12.5px;font-weight:500}
+.kpi .v{font-size:29px;font-weight:800;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .n{color:var(--soft);font-size:12.5px;margin-top:3px}
+.kpi.hero-k{background:var(--panel)}
+.kpi.hero-k .v{color:var(--gold)}
+
+/* ---------- sections ---------- */
+section{margin-bottom:46px}
+h2{font-size:21px;font-weight:600;letter-spacing:-.018em;margin-bottom:5px}
+.dek{color:var(--soft);font-size:14px;max-width:74ch;margin-bottom:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(390px,1fr));gap:20px}
+.card{background:var(--deep);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.card h3{font-size:15px;font-weight:600;margin-bottom:3px}
+.card .cd{color:var(--mute);font-size:12.5px;margin-bottom:16px}
+
+/* ---------- charts ---------- */
+svg{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--line);stroke-width:1}
+.ax{fill:var(--mute);font-size:11px;font-family:inherit}
+.vl{fill:var(--soft);font-size:11px;font-weight:600;font-family:inherit;font-variant-numeric:tabular-nums}
+.bar{transition:opacity .15s}
+.bar:hover{opacity:.72}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+th{text-align:right;color:var(--mute);font-weight:500;font-size:12.5px;padding:9px 10px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+td{padding:10px;border-bottom:1px solid rgba(35,67,63,.55);text-align:right}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(78,195,165,.05)}
+.mini{height:6px;border-radius:3px;background:var(--teal);display:inline-block;vertical-align:middle}
+
+/* ---------- gaps ---------- */
+.gaps{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);border-radius:var(--r);padding:26px}
+.gaps h2{margin-bottom:4px}
+.gaps ol{margin:18px 0 0;padding-left:0;list-style:none;counter-reset:g}
+.gaps li{counter-increment:g;position:relative;padding:0 0 16px 34px;color:var(--soft);font-size:14px;max-width:82ch}
+.gaps li:last-child{padding-bottom:0}
+.gaps li::before{content:counter(g);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--rose);color:#2A0D06;font-size:12px;font-weight:800;display:grid;place-items:center}
+.gaps b{color:var(--paper);font-weight:600}
+
+.empty{color:var(--mute);font-size:14px;padding:26px 0;text-align:center}
+footer{color:var(--mute);font-size:12.5px;border-top:1px solid var(--line);padding-top:22px}
+
+@media (max-width:640px){
+  .hero{padding:36px 0 26px}
+  .kpi .v{font-size:24px}
+  .card{padding:17px}
+  .grid2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>NASM certification sales,<br>January to September 2026</h1>
+    <p class="sub">302 closed deals across three executives and 23 course lines. Filter any panel below and every number recalculates from the same 331 source rows.</p>
+    <p class="stamp">Cleaned from nasm_sales_analysis.xlsx &middot; September data runs to the 7th only</p>
+  </header>
+</div>
+
+<div class="filters">
+  <div class="wrap frow" id="filters">
+    <div class="fgroup"><span class="flab">Executive</span><span id="fExec"></span></div>
+    <div class="fgroup"><span class="flab">Course</span><span id="fCourse"></span></div>
+    <div class="fgroup"><span class="flab">Payment</span><span id="fEmi"></span></div>
+    <button class="reset" id="reset">Clear filters</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <h2>Where the months went</h2>
+    <p class="dek">July carried the year. Read September as a partial month, not a collapse.</p>
+    <div class="card">
+      <h3>Revenue agreed and deals closed by month</h3>
+      <p class="cd">Bars show revenue. The line tracks deal count on its own scale.</p>
+      <div id="cMonth"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How long a lead takes to close</h2>
+    <p class="dek">Two different businesses hide inside one average. Four in ten deals close inside a week; a sixth take more than a year and drag the mean to 198 days. Watch the bucket shape, not the average.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Deals by time from lead to close</h3>
+        <p class="cd">Seven deals with negative or blank ageing are excluded as date-entry errors.</p>
+        <div id="cAgeBucket"></div>
+      </div>
+      <div class="card">
+        <h3>Average ageing, month by month</h3>
+        <p class="cd">The May spike is old leads being reactivated, not new leads slowing down.</p>
+        <div id="cAgeMonth"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Who is closing what</h2>
+    <p class="dek">Clarence closes more and closes faster. Omprakash carries the longest average ageing and the largest derived outstanding balance.</p>
+    <div class="card">
+      <div id="tExec"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Course mix</h2>
+    <p class="dek">CPT and its exam variants are the engine. Everything else is long tail.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Revenue by course</h3>
+        <p class="cd">Top ten by revenue agreed.</p>
+        <div id="cCourse"></div>
+      </div>
+      <div class="card">
+        <h3>Average deal size by book supplied</h3>
+        <p class="cd">Book status was parsed from free text. Seven in ten rows record nothing, so treat this as a signal to verify, not a finding.</p>
+        <div id="cBook"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Payment behaviour</h2>
+    <p class="dek">EMI is rare but attaches to bigger deals — an under-used lever rather than a risk.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Full payment against EMI</h3>
+        <p class="cd">Share of closed deals and average deal size for each.</p>
+        <div id="cEmiChart"></div>
+      </div>
+      <div class="card">
+        <h3>Cash collected by month on EMI deals</h3>
+        <p class="cd">Includes instalments banked after the original close date.</p>
+        <div id="cEmiMonth"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where leads come from</h2>
+    <p class="dek">Referral leads the count. Compare each source's average ageing against its volume before shifting spend.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Deals and ageing by lead source</h3>
+        <div id="tSource"></div>
+      </div>
+      <div class="card">
+        <h3>Deals by city</h3>
+        <p class="cd">Top ten. Chennai and Bangalore carry a third of everything.</p>
+        <div id="cCity"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gaps">
+    <h2>Three things this data cannot yet answer</h2>
+    <p class="dek">Each is a missing column, not a missing analysis. Add them at capture and these views build themselves next month.</p>
+    <ol>
+      <li><b>Repayment delays.</b> No due date or instalment number exists anywhere in the source, so adherence to an EMI schedule cannot be measured. Add <b>EMI Due Date</b> and <b>EMI Instalment No</b> to the capture sheet.</li>
+      <li><b>True discounting.</b> No list price is recorded, so a real discount percentage is impossible. The workbook proxies it against each course's own median. Send the official price list and it converts to genuine discount tracking.</li>
+      <li><b>Outstanding balances.</b> The Outstanding column arrived completely empty. Figures here are derived as agreed minus received on the sale row, which overstates the balance wherever a later instalment was recorded separately.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Also worth fixing at source: seven rows close before their lead was created, 315 invoice numbers cover 331 rows, and several customer names hold a pasted GST address block instead of a name.
+  </footer>
+</div>
+<script>
+const ROWS = [{"m":"2026-01","a":41.0,"ct":"New","ci":"Punjab","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Indore","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-01","a":4.0,"ct":"New","ci":"Pune","s":"NASM Direct","e":"Clarence","c":"NASM-CSNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":30.0,"ct":"New","ci":"Bangalore","s":"Instagram","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1089.0,"ct":"New","ci":"Jamshedpur","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":1,"ag":50000.0,"rc":49500.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":4.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":58500.0,"rc":58000.0,"o":500.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-01","a":4.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":null,"rc":500.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":42.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":null,"p":"Bank Transfer","b":"Original Book","t":0},{"m":"2026-01","a":42.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Omprakash","c":"NASM-VCS","emi":1,"ag":17000.0,"rc":17000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":368.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Clarence","c":"NASM-CPT (Absent Fee)","emi":0,"ag":10000.0,"rc":10000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":11.0,"ct":"New","ci":"Gurgaon","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":1,"ag":55000.0,"rc":50000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":225.0,"ct":"New","ci":"Hyderabad","s":"CPT (Gym Certification)","e":"Clarence","c":"NASM-YES","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Pune","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":7.0,"ct":"New","ci":"Dubai , Uae","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"Multi-Course Bundle","emi":1,"ag":210000.0,"rc":5000.0,"o":205000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":2.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"Multi-Course Bundle","emi":1,"ag":null,"rc":99000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":3.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"Multi-Course Bundle","emi":1,"ag":null,"rc":99000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":3.0,"ct":"New","ci":"Dehradun","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":12.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":-9.0,"ct":"New","ci":"Kerala","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":51000.0,"rc":51000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-01","a":4.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"Multi-Course Bundle","emi":1,"ag":null,"rc":7000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":21.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":51000.0,"rc":51000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":2.0,"ct":"New","ci":"Bhopal","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":790.0,"ct":"New","ci":"Kottayam (Kerela)","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":199.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Gujarat","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":14.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":58000.0,"rc":58000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":15.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":2.0,"ct":"New","ci":"Malkajgiri","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":1,"ag":60000.0,"rc":30000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":425.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-WLS","emi":0,"ag":40000.0,"rc":40000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Thane","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-01","a":233.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-PES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":366.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-01","a":21.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Bangalore","s":"Whatsapp","e":"Clarence","c":"NASM-GFI","emi":0,"ag":27425.0,"rc":27425.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":12.0,"ct":"New","ci":"Gurgaon","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":1,"ag":null,"rc":5000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-01","a":1015.0,"ct":"New","ci":"Kerala","s":"Referral","e":"Omprakash","c":"NASM-CPT (Absent Fee)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":5.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":0,"ag":43000.0,"rc":43000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":48000.0,"rc":48000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Surat","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":1.0,"ct":"New","ci":"Surat","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-01","a":65.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60600.0,"rc":60600.0,"o":0.0,"p":"CC Avenue/Bank Transfer","b":"Not Specified","t":1},{"m":"2026-01","a":0.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":207.0,"ct":"New","ci":"Kozhikode","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":0.0,"ct":"New","ci":"Telangana","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":57000.0,"rc":57000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":68.0,"ct":"New","ci":"Mohali","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":7.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":11.0,"ct":"New","ci":"Andra","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":56000.0,"rc":20000.0,"o":36000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":3.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CES","emi":1,"ag":58000.0,"rc":20000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-02","a":5.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CES","emi":1,"ag":null,"rc":38000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-02","a":13.0,"ct":"New","ci":"Kanyakumari","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":1,"ag":40000.0,"rc":20000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-02","a":138.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":370.0,"ct":"New","ci":"Ernakulam","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":222.0,"ct":"New","ci":"Bangalore","s":"Whatsapp","e":"Clarence","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":3.0,"ct":"New","ci":"Pune","s":"CPT","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":63.0,"ct":"New","ci":"West Bangal","s":"Whatsapp","e":"Clarence","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":0.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-PES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":114.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-PES","emi":0,"ag":58000.0,"rc":58000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":26.0,"ct":"New","ci":"Mumbai","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":293.0,"ct":"New","ci":"Thane","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":293.0,"ct":"New","ci":"Thane","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":293.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":293.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":19.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":78.0,"ct":"New","ci":"Coimbatore","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":4.0,"ct":"New","ci":"Kerala","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":0.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":742.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CES","emi":0,"ag":52000.0,"rc":52000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-02","a":24.0,"ct":"New","ci":"Visakhapatnam","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":52000.0,"rc":52000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-02","a":3.0,"ct":"New","ci":"Udupi","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":0.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":1.0,"ct":"New","ci":"Hyderabad","s":"NASM Direct","e":"Clarence","c":"NASM-YES","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-02","a":1566.0,"ct":"New","ci":"Chennai","s":null,"e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":9.0,"ct":"New","ci":"Surat","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-02","a":830.0,"ct":"New","ci":"Kottayam (Kerela)","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":1204.0,"ct":"New","ci":"Ladakh","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":526.0,"ct":"New","ci":"Hyderabad","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":6.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"Multi-Course Bundle","emi":1,"ag":175000.0,"rc":50000.0,"o":125000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":2.0,"ct":"New","ci":"Delhi","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":6.0,"ct":"existing","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"Multi-Course Bundle","emi":1,"ag":null,"rc":125000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-03","a":1.0,"ct":"New","ci":"Gurugram","s":"NASM Direct","e":"Clarence","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":2.0,"ct":"New","ci":"Gurugram","s":"NASM Direct","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":157.0,"ct":"New","ci":"Coimbatore","s":"Instagram","e":"Omprakash","c":"NASM-CES","emi":0,"ag":56200.0,"rc":56200.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-03","a":792.0,"ct":"New","ci":"Kerala","s":"Referral","e":"Clarence","c":"NASM-Power Pack","emi":0,"ag":35000.0,"rc":35000.0,"o":0.0,"p":"Card Payment","b":"Not Specified","t":1},{"m":"2026-03","a":43.0,"ct":"New","ci":"Hyderabad","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":7.0,"ct":"New","ci":"Canada","s":"Referral","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":11.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":47.0,"ct":"New","ci":"Andra","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":null,"rc":36000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-03","a":10.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":1612.0,"ct":"New","ci":"Delhi","s":"Referral","e":"Clarence","c":"NASM-YES","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":1514.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Clarence","c":"NASM-CES","emi":0,"ag":52000.0,"rc":52000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-03","a":52.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":20.0,"ct":"New","ci":"Vishakapatnam","s":"NASM Direct","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":2.0,"ct":"New","ci":"Lucknow","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":857.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-GFI","emi":0,"ag":35000.0,"rc":35000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":59.0,"ct":"New","ci":"Kerala","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":16.0,"ct":"New","ci":"Telangana","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":null,"ct":"New","ci":"Bangalore","s":"Website","e":"Clarence","c":"NASM-PBC","emi":1,"ag":60000.0,"rc":45000.0,"o":15000.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":1.0,"ct":"New","ci":"Gurgaon","s":"CPT","e":"Clarence","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":2.0,"ct":"New","ci":"Maharashtra","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":21.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":5.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Athithi","c":"NASM GPTS","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":73.0,"ct":"New","ci":"Cochin","s":"NASM Direct","e":"Clarence","c":"NASM-CNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":534.0,"ct":"existing","ci":"Delhi","s":"Website","e":"Omprakash","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":-3.0,"ct":"New","ci":"Pollachi","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":null,"ct":"New","ci":"Kerala","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":1.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Xerox Book","t":1},{"m":"2026-03","a":1.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Omprakash","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":6.0,"ct":"New","ci":"Delhi","s":"Whatsapp","e":"Athithi","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-03","a":404.0,"ct":"existing","ci":"Gujarat","s":"Website","e":"Athithi","c":"NASM-CPT (Absent Fee)","emi":0,"ag":10000.0,"rc":10000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-03","a":1572.0,"ct":"New","ci":"Chennai","s":"Walk-in","e":"Omprakash","c":"NASM-WFS","emi":0,"ag":45000.0,"rc":45000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":109.0,"ct":"New","ci":"Mira","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":822.0,"ct":"New","ci":"Noida","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Xerox Book","t":1},{"m":"2026-04","a":822.0,"ct":"New","ci":"Noida","s":"CPT","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":94.0,"ct":"New","ci":"Thiruvarur","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":58000.0,"rc":58000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":228.0,"ct":"New","ci":"Kanchipuram","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":1727.0,"ct":"New","ci":"Delhi","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":1.0,"ct":"New","ci":"Gujarat","s":"CPT","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":348.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":1.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-YES","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":34.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":2.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":5.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Athithi","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-04","a":36.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":0.0,"ct":"New","ci":"Ahemedabad","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-04","a":1.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CNC","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":1.0,"ct":"New","ci":"Delhi","s":"Website","e":"Athithi","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-04","a":3.0,"ct":"New","ci":"Assam","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-04","a":413.0,"ct":"New","ci":"Chatrapati Sambhajinagar","s":"NASM Direct","e":"Clarence","c":"NASM-GOLF","emi":1,"ag":40000.0,"rc":25000.0,"o":15000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":3.0,"ct":"New","ci":"Kerala","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-04","a":88.0,"ct":"New","ci":"Malkajgiri","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":1,"ag":null,"rc":30000.0,"o":null,"p":"CC Avenue","b":"Not Specified","t":0},{"m":"2026-04","a":-1.0,"ct":"New","ci":"Kerala","s":"CPT","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":4.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":130.0,"ct":"New","ci":"Aligarh","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":1,"ag":null,"rc":10000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-04","a":21.0,"ct":"New","ci":"Pune","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-04","a":21.0,"ct":"New","ci":"Pune","s":"Instagram","e":"Omprakash","c":"NASM-CSNC","emi":0,"ag":51650.0,"rc":51650.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":0.0,"ct":"New","ci":"Tirupur","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":88.0,"ct":"New","ci":"Kanyakumari","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":1,"ag":null,"rc":5000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-04","a":353.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CSNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":437.0,"ct":"New","ci":"Hyderabad","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":437.0,"ct":"New","ci":"Hyderabad","s":"NASM Direct","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":1923.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":0,"ag":43645.0,"rc":43645.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-04","a":2.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":424.0,"ct":"New","ci":"Chatrapati Sambhajinagar","s":"NASM Direct","e":"Clarence","c":"NASM-GOLF","emi":1,"ag":null,"rc":15000.0,"o":null,"p":"Razorpay","b":"Not Specified","t":0},{"m":"2026-04","a":49.0,"ct":"New","ci":"Kolkata","s":"NASM Direct","e":"Athithi","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Razorpay","b":"Not Specified","t":1},{"m":"2026-04","a":2213.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Clarence","c":"Multi-Course Bundle","emi":0,"ag":200000.0,"rc":200000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-04","a":58.0,"ct":"New","ci":"Hyderabad","s":"Website","e":"Athithi","c":"NASM-CPT","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Razorpay","b":"Spiral Book","t":1},{"m":"2026-04","a":10.0,"ct":"New","ci":"Madurai","s":"Instagram","e":"Omprakash","c":"NASM-PBC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":0.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":5.0,"ct":"New","ci":"Gujarat","s":"CPT","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":98.0,"ct":"New","ci":"Kanyakumari","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":1,"ag":null,"rc":10000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-05","a":1.0,"ct":"New","ci":"Bathinda","s":"CPT","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":124.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":2.0,"ct":"New","ci":"Kolkata","s":"Whatsapp","e":"Clarence","c":"NASM-CSNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":24.0,"ct":"New","ci":"Hyderabad","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":109.0,"ct":"New","ci":"Pune","s":"NASM Direct","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":-2.0,"ct":"New","ci":"Pune","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":0.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":null,"p":"CC Avenue","b":"Not Specified","t":0},{"m":"2026-05","a":3.0,"ct":"New","ci":"Hyderabad","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":1691.0,"ct":"New","ci":"Haryana","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55825.0,"rc":55825.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":8.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":2103.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Athithi","c":"NASM-CNC (Re-Exam)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":0.0,"ct":"New","ci":"Hospet","s":"Website","e":"Athithi","c":"NASM-PES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":3.0,"ct":"New","ci":"Trivandrum","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-05","a":4.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Athithi","c":"NASM-CSNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":4.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Athithi","c":"NASM-CPT","emi":1,"ag":60000.0,"rc":40000.0,"o":20000.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-05","a":5.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Athithi","c":"NASM-CNC","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":6.0,"ct":"New","ci":"Ahmedabad","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":6.0,"ct":"New","ci":"Mumbai","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-05","a":323.0,"ct":"New","ci":"New Delhi","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":7.0,"ct":"existing","ci":"Bangalore","s":"Website","e":"Athithi","c":"NASM-CPT","emi":1,"ag":null,"rc":20000.0,"o":null,"p":"Bank Transfer","b":"Original Book","t":0},{"m":"2026-05","a":267.0,"ct":"existing","ci":"Hyderabad","s":"Website","e":"Omprakash","c":"NASM-CPT (Absent Fee)","emi":0,"ag":null,"rc":10000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-05","a":16.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":1723.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":54000.0,"rc":54000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":372.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Athithi","c":"NASM-CNC (Re-Exam)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":266.0,"ct":"New","ci":"Chennai","s":"PES","e":"Omprakash","c":"NASM-PES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":434.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":3.0,"ct":"New","ci":"Kanchipuram","s":"Referral","e":"Athithi","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":2222.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":1,"ag":52000.0,"rc":35000.0,"o":17000.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-05","a":2222.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-05","a":7.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CNC","emi":1,"ag":50000.0,"rc":40000.0,"o":10000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":1.0,"ct":"New","ci":"Pune","s":"CPT","e":"Clarence","c":"NASM-CSNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-05","a":241.0,"ct":"existing","ci":"Hyderabad","s":"CPT","e":"Omprakash","c":"NASM-CPT (Absent Fee)","emi":0,"ag":10000.0,"rc":10000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-05","a":445.0,"ct":"New","ci":"Banglore","s":"Whatsapp","e":"Clarence","c":"NASM-CES","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":11.0,"ct":"existing","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CNC","emi":1,"ag":null,"rc":10000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-06","a":127.0,"ct":"New","ci":"Kanyakumari","s":"Referral","e":"Omprakash","c":"NASM-WFS","emi":1,"ag":null,"rc":3000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-06","a":132.0,"ct":"New","ci":"Kerala","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":0.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":59.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":132.0,"ct":"New","ci":"Kerala","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":39.0,"ct":"New","ci":"Pune","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":3.0,"ct":"New","ci":"Chennai","s":"CFR","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":55000.0,"rc":30000.0,"o":25000.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":59.0,"ct":"New","ci":"Kerala","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":107.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Athithi","c":"NASM-CPT (Exam)","emi":0,"ag":22000.0,"rc":22000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":4.0,"ct":"New","ci":"Chennai","s":"CFR","e":"Omprakash","c":"NASM-CPT","emi":1,"ag":null,"rc":25000.0,"o":null,"p":"Bank Transfer","b":"Spiral Book","t":0},{"m":"2026-06","a":6.0,"ct":"New","ci":"Chennai","s":"Knowlarity Call","e":"Clarence","c":"NASM-CNC","emi":0,"ag":57735.0,"rc":57735.0,"o":0.0,"p":"Razorpay","b":"Not Specified","t":1},{"m":"2026-06","a":33.0,"ct":"New","ci":"Bangalore","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":2.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CNC","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":287.0,"ct":"New","ci":"Kerala","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":2123.0,"ct":"existing","ci":"Mumbai","s":"NASM Direct","e":"Athithi","c":"NASM-CNC (Re-Exam)","emi":0,"ag":null,"rc":5000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-06","a":17.0,"ct":"New","ci":"Madhya Pradesh","s":"Website","e":"Athithi","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":17.0,"ct":"New","ci":"Bangalore","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":0.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":702.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":40.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":56000.0,"rc":56000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":54.0,"ct":"New","ci":"Kerala","s":"CPT","e":"Athithi","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-06","a":7.0,"ct":"New","ci":"Delhi","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":15.0,"ct":"New","ci":"Vadodara","s":"NASM Direct","e":"Clarence","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":45.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":1,"ag":50000.0,"rc":40000.0,"o":10000.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-06","a":2.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Athithi","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":33.0,"ct":"New","ci":"Bihar","s":"Whatsapp","e":"Athithi","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-06","a":392.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Athithi","c":"NASM-CNC (Re-Exam)","emi":0,"ag":null,"rc":5000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-06","a":10.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":1.0,"ct":"New","ci":"Haryana","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":1100.0,"ct":"New","ci":"Madurai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":21.0,"ct":"New","ci":"Vadodara","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":10.0,"ct":"New","ci":"Delhi","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":2.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-06","a":12.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":133.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":40.0,"ct":"New","ci":"Punjab","s":"NASM Direct","e":"Athithi","c":"NASM-CNC","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":380.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CES","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-06","a":0.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-06","a":380.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Clarence","c":"NASM-YES","emi":1,"ag":20000.0,"rc":5000.0,"o":15000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":91.0,"ct":"New","ci":"Hyderabad","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-06","a":91.0,"ct":"New","ci":"Hyderabad","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-06","a":110.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":1,"ag":25000.0,"rc":20000.0,"o":5000.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-06","a":3.0,"ct":"existing","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CES","emi":0,"ag":3000.0,"rc":3000.0,"o":0.0,"p":"Credit Card","b":"Spiral Book","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Himachal Pradesh","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":3.0,"ct":"New","ci":"Pune","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-07","a":10.0,"ct":"New","ci":"Faridabad","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":62.0,"ct":"New","ci":"Ambernath","s":"CPT","e":"Clarence","c":"NASM-PES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":11.0,"ct":"New","ci":"Kerala","s":"CPT","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":116.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":1,"ag":null,"rc":5000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-07","a":11.0,"ct":"New","ci":"Thoppumpady","s":"NASM Direct","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":11.0,"ct":"New","ci":"Thoppumpady","s":"NASM Direct","e":"Clarence","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":11.0,"ct":"New","ci":"Thoppumpady","s":"NASM Direct","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":11.0,"ct":"New","ci":"Thoppumpady","s":"NASM Direct","e":"Clarence","c":"NASM-CPR","emi":0,"ag":5000.0,"rc":5000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Haryana","s":"CPT","e":"Athithi","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Haryana","s":"CPT","e":"Athithi","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Guntur","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":3.0,"ct":"New","ci":"Tirupati","s":"Instagram","e":"Athithi","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-07","a":479.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-PES","emi":0,"ag":57000.0,"rc":57000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":8.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":367.0,"ct":"New","ci":"Saudi","s":"Referral","e":"Omprakash","c":"Multi-Course Bundle","emi":0,"ag":300000.0,"rc":300000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Mp","s":"Knowlarity Call","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":95.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT (Absent Fee)","emi":0,"ag":10000.0,"rc":10000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":52000.0,"rc":52000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":588.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":17.0,"ct":"New","ci":"Bihar","s":"NASM Direct","e":"Athithi","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-07","a":1571.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":4.0,"ct":"New","ci":"Kerala","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":12.0,"ct":"New","ci":"Jaipur","s":"CPT","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Mumbai","s":"Knowlarity Call","e":"Clarence","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-07","a":29.0,"ct":"New","ci":"Telangana","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Gujarat","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Gujarat","s":"Referral","e":"Clarence","c":"NASM-WFS","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":6.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Karnataka","s":"Mail","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":113.0,"ct":"New","ci":"Bangalore","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":43.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-07","a":45.0,"ct":"New","ci":"Telangana","s":"Whatsapp","e":"Clarence","c":"NASM-PES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":58.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Kerala","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":5.0,"ct":"New","ci":"Gandhinagar","s":"Website","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":2.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":14.0,"ct":"New","ci":"Mumbai","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-07","a":65.0,"ct":"New","ci":"Salem","s":"CPT","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"GPay","b":"Spiral Book","t":1},{"m":"2026-07","a":2235.0,"ct":"New","ci":"Maharashtra","s":"NASM Direct","e":"Omprakash","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":2235.0,"ct":"New","ci":"Maharashtra","s":"NASM Direct","e":"Omprakash","c":"NASM-BCS","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":425.0,"ct":"New","ci":"Kerala","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CES","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-07","a":1.0,"ct":"New","ci":"Kolkata","s":"Website","e":"Athithi","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-07","a":-2.0,"ct":"New","ci":"Tirupur","s":"Instagram","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-07","a":36.0,"ct":"New","ci":"Chennai","s":"Website","e":"Omprakash","c":"NASM-CES","emi":0,"ag":62000.0,"rc":62000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-07","a":72.0,"ct":"New","ci":"Kerala","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-07","a":322.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":0.0,"ct":"New","ci":"Kerala","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-07","a":11.0,"ct":"New","ci":"Mumbai","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-07","a":4.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-08","a":2.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-08","a":2.0,"ct":"New","ci":"Kolkata","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":21.0,"ct":"New","ci":"Chennai","s":"CPT","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":0,"ag":53000.0,"rc":53000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"NASM-CES","emi":0,"ag":53000.0,"rc":53000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"Bangalore","s":"NASM Direct","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":37.0,"ct":"New","ci":"Mumbai","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":900.0,"ct":"New","ci":"Dubai","s":"Referral","e":"Clarence","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":344.0,"ct":"New","ci":"Hyderabad","s":"CPT","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":28.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":30000.0,"rc":30000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":27.0,"ct":"New","ci":"Hyderabad","s":"Whatsapp","e":"Clarence","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":4.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":3.0,"ct":"New","ci":"Pune","s":"NASM Direct","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-08","a":705.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":1,"ag":null,"rc":20000.0,"o":null,"p":"Bank Transfer","b":"Not Specified","t":0},{"m":"2026-08","a":705.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":5000.0,"rc":5000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":21.0,"ct":"New","ci":"Mumbai","s":"Website","e":"Clarence","c":"NASM-CNC","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":16.0,"ct":"New","ci":"Bangalore","s":"CPT","e":"Clarence","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":8.0,"ct":"New","ci":"Mumbai","s":"NASM Direct","e":"Clarence","c":"Multi-Course Bundle","emi":0,"ag":23500.0,"rc":23500.0,"o":0.0,"p":"Razorpay","b":"Not Specified","t":1},{"m":"2026-08","a":3.0,"ct":"New","ci":"Nellore","s":"Referral","e":"Athithi","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-08","a":62.0,"ct":"New","ci":"Chennai","s":"Referral","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":20000.0,"rc":20000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":52.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Original Book","t":1},{"m":"2026-08","a":52.0,"ct":"New","ci":"Bangalore","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CNC","emi":0,"ag":52000.0,"rc":52000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"West Bengal","s":"Knowlarity Call","e":"Athithi","c":"NASM-CES","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"No Book","t":1},{"m":"2026-08","a":128.0,"ct":"New","ci":"Haryana","s":"Whatsapp","e":"Athithi","c":"NASM-CPT","emi":0,"ag":53000.0,"rc":53000.0,"o":0.0,"p":"Bank Transfer","b":"Spiral Book","t":1},{"m":"2026-08","a":26.0,"ct":"New","ci":"Coimbatore","s":"Referral","e":"Omprakash","c":"NASM-CPT (Renewal)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":9.0,"ct":"New","ci":"Bangalore","s":"Referral","e":"Clarence","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":6.0,"ct":"New","ci":"Chennai","s":"NASM Direct","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"Mumbai","s":"Whatsapp","e":"Athithi","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Bank Transfer","b":"Original Book","t":1},{"m":"2026-08","a":17.0,"ct":"New","ci":"Pune","s":"Referral","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":183.0,"ct":"New","ci":"Vishakapatnam","s":"NASM Direct","e":"Clarence","c":"NASM-CPR","emi":0,"ag":5000.0,"rc":5000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":3.0,"ct":"New","ci":"Noida","s":"CPT","e":"Clarence","c":"NASM-CPT","emi":0,"ag":63000.0,"rc":63000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":3.0,"ct":"New","ci":"Noida","s":"CPT","e":"Clarence","c":"NASM-CNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":3.0,"ct":"New","ci":"Noida","s":"CPT","e":"Clarence","c":"NASM-CPR","emi":0,"ag":7000.0,"rc":7000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":7.0,"ct":"New","ci":"Chennai","s":"Whatsapp","e":"Athithi","c":"NASM-GFI","emi":0,"ag":40000.0,"rc":40000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":22.0,"ct":"New","ci":"Kalyan","s":"NASM Direct","e":"Clarence","c":"Multi-Course Bundle","emi":0,"ag":165000.0,"rc":165000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-08","a":2.0,"ct":"New","ci":"Dehradun","s":null,"e":"Clarence","c":"NASM-CSNC","emi":0,"ag":55000.0,"rc":55000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-08","a":1.0,"ct":"New","ci":"Himachal Pradesh","s":"Website","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Spiral Book","t":1},{"m":"2026-09","a":396.0,"ct":"New","ci":"Coimbatore","s":"Whatsapp","e":"Omprakash","c":"NASM-CPT (EL & Exam)","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"Bank Transfer","b":"No Book","t":1},{"m":"2026-09","a":38.0,"ct":"New","ci":"Chennai","s":"Knowlarity Call","e":"Omprakash","c":"NASM-CPT","emi":0,"ag":65000.0,"rc":65000.0,"o":0.0,"p":"Credit Card","b":"Original Book","t":1},{"m":"2026-09","a":187.0,"ct":"New","ci":"Chennai","s":"Instagram","e":"Omprakash","c":"NASM-CPT (Exam)","emi":0,"ag":25000.0,"rc":25000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-09","a":1.0,"ct":"New","ci":"Dumdum","s":"NASM Direct","e":"Clarence","c":"NASM-CPT","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-09","a":1.0,"ct":"New","ci":"Dumdum","s":"NASM Direct","e":"Clarence","c":"NASM-SFS","emi":0,"ag":40000.0,"rc":40000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1},{"m":"2026-09","a":1026.0,"ct":"New","ci":"Uttar Pradesh","s":"Website","e":"Clarence","c":"NASM-CES","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-09","a":4.0,"ct":"New","ci":"Visakhapatnam","s":"Referral","e":"Clarence","c":"NASM-PBC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-09","a":5.0,"ct":"New","ci":"Haryana","s":"Website","e":"Clarence","c":"NASM-CPT (EL & Exam)","emi":0,"ag":60000.0,"rc":60000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-09","a":4.0,"ct":"New","ci":"Bhilwara","s":"Website","e":"Clarence","c":"NASM-CSNC","emi":0,"ag":50000.0,"rc":50000.0,"o":0.0,"p":"CC Avenue","b":"Not Specified","t":1},{"m":"2026-09","a":82.0,"ct":"New","ci":"Telangana","s":"Whatsapp","e":"Clarence","c":"NASM-CPT (Absent Fee)","emi":0,"ag":10000.0,"rc":10000.0,"o":0.0,"p":"Bank Transfer","b":"Not Specified","t":1}];
+
+const GOLD='#E8B33C', TEAL='#4EC3A5', ROSE='#E2674A', VIOLET='#8E7CE0', MUTE='#8FA9A4';
+const F = {exec:'All', course:'All', emi:'All'};
+
+const inr = n => {
+  if(n==null||isNaN(n)) return '—';
+  const a=Math.abs(n);
+  if(a>=1e7) return '₹'+(n/1e7).toFixed(2)+' Cr';
+  if(a>=1e5) return '₹'+(n/1e5).toFixed(1)+' L';
+  if(a>=1e3) return '₹'+Math.round(n/1e3)+'k';
+  return '₹'+Math.round(n);
+};
+const num = n => (n==null||isNaN(n))?'—':Math.round(n).toLocaleString('en-IN');
+const el = (id) => document.getElementById(id);
+
+const MONTHS = [...new Set(ROWS.map(r=>r.m).filter(Boolean))].sort();
+const MLAB = m => ({'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'})[m.split('-')[1]]||m;
+
+const EXECS = ['Clarence','Omprakash','Athithi'];
+const TOPCOURSES = (()=>{ const m={}; ROWS.filter(r=>r.t).forEach(r=>{ if(r.c) m[r.c]=(m[r.c]||0)+1; });
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]); })();
+
+function filtered(){
+  return ROWS.filter(r=>{
+    if(F.exec!=='All' && r.e!==F.exec) return false;
+    if(F.course!=='All' && r.c!==F.course) return false;
+    if(F.emi==='EMI' && !r.emi) return false;
+    if(F.emi==='Full' && r.emi) return false;
+    return true;
+  });
+}
+const sales = rs => rs.filter(r=>r.t);
+const sum = (rs,k) => rs.reduce((a,r)=>a+(r[k]||0),0);
+const avg = (arr) => arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+
+/* ---------- chart primitives ---------- */
+function svgEl(w,h){ return `<svg viewBox="0 0 ${w} ${h}" role="img">`; }
+
+function barChart(node, items, opts={}){
+  const {color=TEAL, fmt=inr, height=250, rotate=false} = opts;
+  if(!items.length){ node.innerHTML='<p class="empty">No deals match these filters.</p>'; return; }
+  const W=560, H=height, PL=opts.padLeft||54, PR=14, PT=14, PB=rotate?54:32;
+  const max = Math.max(...items.map(d=>d.v),1);
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const bw = iw/items.length;
+  let s = svgEl(W,H);
+  for(let g=0;g<=4;g++){
+    const y=PT+ih-(ih*g/4);
+    s+=`<line class="gl" x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}"/>`;
+    s+=`<text class="ax" x="${PL-8}" y="${y+4}" text-anchor="end">${fmt(max*g/4)}</text>`;
+  }
+  items.forEach((d,i)=>{
+    const h=Math.max(ih*(d.v/max),d.v>0?2:0);
+    const x=PL+i*bw+bw*0.17, y=PT+ih-h, w=bw*0.66;
+    const c = d.color||color;
+    s+=`<rect class="bar" x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" rx="3"><title>${d.l}: ${fmt(d.v)}</title></rect>`;
+    if(items.length<=12) s+=`<text class="vl" x="${x+w/2}" y="${y-6}" text-anchor="middle">${fmt(d.v)}</text>`;
+    const lx=PL+i*bw+bw/2;
+    if(rotate) s+=`<text class="ax" x="${lx}" y="${PT+ih+14}" text-anchor="end" transform="rotate(-38 ${lx} ${PT+ih+14})">${d.l}</text>`;
+    else s+=`<text class="ax" x="${lx}" y="${PT+ih+17}" text-anchor="middle">${d.l}</text>`;
+  });
+  node.innerHTML = s+'</svg>';
+}
+
+function comboChart(node, items){
+  if(!items.length){ node.innerHTML='<p class="empty">No deals match these filters.</p>'; return; }
+  const W=560,H=280,PL=56,PR=44,PT=16,PB=34;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const maxV=Math.max(...items.map(d=>d.v),1), maxC=Math.max(...items.map(d=>d.c),1);
+  const bw=iw/items.length;
+  let s=svgEl(W,H);
+  for(let g=0;g<=4;g++){
+    const y=PT+ih-(ih*g/4);
+    s+=`<line class="gl" x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}"/>`;
+    s+=`<text class="ax" x="${PL-8}" y="${y+4}" text-anchor="end">${inr(maxV*g/4)}</text>`;
+    s+=`<text class="ax" x="${W-PR+8}" y="${y+4}" fill="${GOLD}">${Math.round(maxC*g/4)}</text>`;
+  }
+  items.forEach((d,i)=>{
+    const h=ih*(d.v/maxV), x=PL+i*bw+bw*0.2, y=PT+ih-h;
+    s+=`<rect class="bar" x="${x}" y="${y}" width="${bw*0.6}" height="${Math.max(h,2)}" fill="${TEAL}" rx="3"><title>${d.l}: ${inr(d.v)} · ${d.c} deals</title></rect>`;
+    s+=`<text class="ax" x="${PL+i*bw+bw/2}" y="${PT+ih+17}" text-anchor="middle">${d.l}</text>`;
+  });
+  const pts=items.map((d,i)=>[PL+i*bw+bw/2, PT+ih-ih*(d.c/maxC)]);
+  s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${GOLD}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach((p,i)=>{ s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${GOLD}" stroke="#102523" stroke-width="2"><title>${items[i].l}: ${items[i].c} deals</title></circle>`; });
+  node.innerHTML=s+'</svg>';
+}
+
+function lineChart(node, items, opts={}){
+  const {color=VIOLET, fmt=num} = opts;
+  if(!items.length){ node.innerHTML='<p class="empty">No deals match these filters.</p>'; return; }
+  const W=560,H=250,PL=50,PR=16,PT=18,PB=34;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const max=Math.max(...items.map(d=>d.v),1);
+  const step = items.length>1 ? iw/(items.length-1) : 0;
+  let s=svgEl(W,H);
+  for(let g=0;g<=4;g++){
+    const y=PT+ih-(ih*g/4);
+    s+=`<line class="gl" x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}"/>`;
+    s+=`<text class="ax" x="${PL-8}" y="${y+4}" text-anchor="end">${fmt(max*g/4)}</text>`;
+  }
+  const pts=items.map((d,i)=>[PL+i*step, PT+ih-ih*(d.v/max)]);
+  s+=`<polygon points="${PL},${PT+ih} ${pts.map(p=>p.join(',')).join(' ')} ${PL+(items.length-1)*step},${PT+ih}" fill="${color}" opacity="0.13"/>`;
+  s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach((p,i)=>{
+    s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${color}" stroke="#102523" stroke-width="2"><title>${items[i].l}: ${fmt(items[i].v)}</title></circle>`;
+    s+=`<text class="ax" x="${p[0]}" y="${PT+ih+17}" text-anchor="middle">${items[i].l}</text>`;
+  });
+  node.innerHTML=s+'</svg>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  const rs = filtered(), sl = sales(rs);
+  const revenue = sum(sl,'ag'), cash = sum(rs,'rc');
+  const ages = sl.map(r=>r.a).filter(a=>a!=null && a>=0);
+  const emiCount = sl.filter(r=>r.emi).length;
+
+  el('kpis').innerHTML = [
+    ['Revenue agreed', inr(revenue), num(sl.length)+' deals closed', true],
+    ['Cash received', inr(cash), 'includes later instalments'],
+    ['Average deal', inr(sl.length?revenue/sl.length:0), 'per closed deal'],
+    ['Average ageing', ages.length?Math.round(avg(ages))+' days':'—', 'lead created to close'],
+    ['On EMI', sl.length?Math.round(emiCount/sl.length*100)+'%':'—', num(emiCount)+' of '+num(sl.length)+' deals'],
+    ['Outstanding', inr(sum(sl,'o')), 'derived, see note below']
+  ].map(([k,v,n,h])=>`<div class="kpi${h?' hero-k':''}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join('');
+
+  comboChart(el('cMonth'), MONTHS.map(m=>{
+    const g=sl.filter(r=>r.m===m);
+    return {l:MLAB(m), v:sum(g,'ag'), c:g.length};
+  }));
+
+  const BUCKETS=[['0–7',0,7],['8–15',8,15],['16–30',16,30],['31–60',31,60],['61–90',61,90],['91–180',91,180],['181–365',181,365],['365+',366,1e9]];
+  barChart(el('cAgeBucket'), BUCKETS.map(([l,lo,hi])=>{
+    const n=sl.filter(r=>r.a!=null&&r.a>=lo&&r.a<=hi).length;
+    return {l, v:n, color: hi>365?ROSE : (hi<=7?TEAL:'#3A7F72')};
+  }), {fmt:num, rotate:true, padLeft:40});
+
+  lineChart(el('cAgeMonth'), MONTHS.map(m=>{
+    const a=sl.filter(r=>r.m===m&&r.a!=null&&r.a>=0).map(r=>r.a);
+    return {l:MLAB(m), v:a.length?Math.round(avg(a)):0};
+  }), {color:VIOLET, fmt:n=>Math.round(n)+'d'});
+
+  const execRows = EXECS.map(e=>{
+    const g=sl.filter(r=>r.e===e), all=rs.filter(r=>r.e===e);
+    const a=g.map(r=>r.a).filter(x=>x!=null&&x>=0);
+    return {e, n:g.length, rev:sum(g,'ag'), cash:sum(all,'rc'), avgd:g.length?sum(g,'ag')/g.length:0, age:a.length?avg(a):null, out:sum(g,'o')};
+  }).filter(r=>r.n>0).sort((a,b)=>b.rev-a.rev);
+  const maxRev=Math.max(...execRows.map(r=>r.rev),1);
+  el('tExec').innerHTML = execRows.length? `<table><thead><tr>
+    <th>Executive</th><th>Deals</th><th>Revenue agreed</th><th>Share</th><th>Average deal</th><th>Average ageing</th><th>Outstanding</th>
+    </tr></thead><tbody>${execRows.map(r=>`<tr>
+      <td>${r.e}</td><td>${num(r.n)}</td><td>${inr(r.rev)}</td>
+      <td><span class="mini" style="width:${Math.round(r.rev/maxRev*66)}px"></span></td>
+      <td>${inr(r.avgd)}</td><td>${r.age!=null?Math.round(r.age)+' d':'—'}</td><td>${inr(r.out)}</td>
+    </tr>`).join('')}</tbody></table>` : '<p class="empty">No deals match these filters.</p>';
+
+  const cm={}; sl.forEach(r=>{ if(r.c) cm[r.c]=(cm[r.c]||0)+(r.ag||0); });
+  barChart(el('cCourse'), Object.entries(cm).sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .map(([l,v])=>({l:l.replace('NASM-','').replace('NASM ',''), v})), {color:GOLD, rotate:true, padLeft:46});
+
+  const BOOKS=['Original Book','Spiral Book','Xerox Book','No Book','Not Specified'];
+  barChart(el('cBook'), BOOKS.map(b=>{
+    const g=sl.filter(r=>r.b===b);
+    return {l:b.replace(' Book','').replace('Not Specified','No record'), v:g.length?sum(g,'ag')/g.length:0,
+            color: b==='Not Specified'?MUTE:TEAL};
+  }).filter(d=>d.v>0), {rotate:true, padLeft:46});
+
+  const fullS=sl.filter(r=>!r.emi), emiS=sl.filter(r=>r.emi);
+  barChart(el('cEmiChart'), [
+    {l:'Full payment', v:fullS.length?sum(fullS,'ag')/fullS.length:0, color:TEAL},
+    {l:'EMI', v:emiS.length?sum(emiS,'ag')/emiS.length:0, color:GOLD}
+  ].filter(d=>d.v>0), {height:220});
+
+  barChart(el('cEmiMonth'), MONTHS.map(m=>({l:MLAB(m), v:sum(rs.filter(r=>r.m===m&&r.emi),'rc')})), {color:GOLD});
+
+  const sm={}; sl.forEach(r=>{ if(r.s){ (sm[r.s]=sm[r.s]||[]).push(r); } });
+  const srcRows=Object.entries(sm).map(([s,g])=>{
+    const a=g.map(r=>r.a).filter(x=>x!=null&&x>=0);
+    return {s, n:g.length, rev:sum(g,'ag'), age:a.length?avg(a):null};
+  }).sort((a,b)=>b.n-a.n).slice(0,9);
+  const maxN=Math.max(...srcRows.map(r=>r.n),1);
+  el('tSource').innerHTML = srcRows.length? `<table><thead><tr>
+    <th>Source</th><th>Deals</th><th></th><th>Revenue</th><th>Average ageing</th>
+    </tr></thead><tbody>${srcRows.map(r=>`<tr>
+      <td>${r.s}</td><td>${num(r.n)}</td>
+      <td><span class="mini" style="width:${Math.round(r.n/maxN*60)}px"></span></td>
+      <td>${inr(r.rev)}</td><td>${r.age!=null?Math.round(r.age)+' d':'—'}</td>
+    </tr>`).join('')}</tbody></table>` : '<p class="empty">No deals match these filters.</p>';
+
+  const cty={}; sl.forEach(r=>{ if(r.ci) cty[r.ci]=(cty[r.ci]||0)+1; });
+  barChart(el('cCity'), Object.entries(cty).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([l,v])=>({l,v})),
+    {color:VIOLET, fmt:num, rotate:true, padLeft:40});
+}
+
+/* ---------- filter chips ---------- */
+function chips(node, key, values){
+  node.innerHTML = values.map(v=>{
+    const lab = v==='All'?'All':(key==='course'?v.replace('NASM-','').replace('NASM ',''):v);
+    return `<button class="chip" data-k="${key}" data-v="${v}" aria-pressed="${F[key]===v}">${lab}</button>`;
+  }).join('');
+}
+function paint(){
+  document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed', F[c.dataset.k]===c.dataset.v));
+}
+chips(el('fExec'),'exec',['All',...EXECS]);
+chips(el('fCourse'),'course',['All',...TOPCOURSES]);
+chips(el('fEmi'),'emi',['All','Full','EMI']);
+
+document.addEventListener('click', e=>{
+  const c=e.target.closest('.chip'); if(!c) return;
+  F[c.dataset.k]=c.dataset.v; paint(); render();
+});
+el('reset').addEventListener('click', ()=>{ F.exec='All'; F.course='All'; F.emi='All'; paint(); render(); });
+
+render();
+</script>
+</body>
+</html>
