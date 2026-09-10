@@ -138,7 +138,7 @@ footer{color:var(--mute);font-size:12.5px;border-top:1px solid var(--line);paddi
 
   <section>
     <h2>How long a lead takes to close</h2>
-    <p class="dek">Two different businesses hide inside one average. Four in ten deals close inside a week; a sixth take more than a year and drag the mean to 198 days. Watch the bucket shape, not the average.</p>
+    <p class="dek">Two different businesses hide inside one average. Four in ten deals close inside a week; a sixth take more than a year and drag the mean to 198 days against a median of 16. Read the median and the long-tail share together — the average mostly tracks how many old leads got reactivated that month.</p>
     <div class="grid2">
       <div class="card">
         <h3>Deals by time from lead to close</h3>
@@ -146,8 +146,8 @@ footer{color:var(--mute);font-size:12.5px;border-top:1px solid var(--line);paddi
         <div id="cAgeBucket"></div>
       </div>
       <div class="card">
-        <h3>Average ageing, month by month</h3>
-        <p class="cd">The May spike is old leads being reactivated, not new leads slowing down.</p>
+        <h3>Median and average ageing, month by month</h3>
+        <p class="cd">June is the trap. The average halved from May, but the median rose from 8 days to 33 — the average only fell because reactivated year-old leads dropped from a quarter of closes to a tenth.</p>
         <div id="cAgeMonth"></div>
       </div>
     </div>
@@ -155,7 +155,7 @@ footer{color:var(--mute);font-size:12.5px;border-top:1px solid var(--line);paddi
 
   <section>
     <h2>Who is closing what</h2>
-    <p class="dek">Clarence closes more and closes faster. Omprakash carries the longest average ageing and the largest derived outstanding balance.</p>
+    <p class="dek">Clarence closes more and closes faster on both measures. Omprakash's typical deal takes 39 days against Clarence's 11, and he carries the largest derived outstanding balance.</p>
     <div class="card">
       <div id="tExec"></div>
     </div>
@@ -222,7 +222,7 @@ footer{color:var(--mute);font-size:12.5px;border-top:1px solid var(--line);paddi
   </section>
 
   <footer>
-    Also worth fixing at source: seven rows close before their lead was created, 315 invoice numbers cover 331 rows, and several customer names hold a pasted GST address block instead of a name.
+    Also worth fixing at source: seven rows close before their lead was created, 315 invoice numbers cover 331 rows, and several customer names hold a pasted GST address block instead of a name. Ageing figures here exclude those seven rows.
   </footer>
 </div>
 <script>
@@ -261,6 +261,8 @@ function filtered(){
 const sales = rs => rs.filter(r=>r.t);
 const sum = (rs,k) => rs.reduce((a,r)=>a+(r[k]||0),0);
 const avg = (arr) => arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+const med = (arr) => { if(!arr.length) return null; const a=[...arr].sort((x,y)=>x-y), h=Math.floor(a.length/2);
+  return a.length%2 ? a[h] : (a[h-1]+a[h])/2; };
 
 /* ---------- chart primitives ---------- */
 function svgEl(w,h){ return `<svg viewBox="0 0 ${w} ${h}" role="img">`; }
@@ -315,6 +317,43 @@ function comboChart(node, items){
   node.innerHTML=s+'</svg>';
 }
 
+
+function ageChart(node, items){
+  if(!items.length){ node.innerHTML='<p class="empty">No deals match these filters.</p>'; return; }
+  const W=560,H=290,PL=50,PR=44,PT=30,PB=52;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const max=Math.max(...items.map(d=>Math.max(d.med,d.mean)),1);
+  const step = items.length>1 ? iw/(items.length-1) : 0;
+  let s=svgEl(W,H);
+  for(let g=0;g<=4;g++){
+    const y=PT+ih-(ih*g/4);
+    s+=`<line class="gl" x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}"/>`;
+    s+=`<text class="ax" x="${PL-8}" y="${y+4}" text-anchor="end">${Math.round(max*g/4)}d</text>`;
+    s+=`<text class="ax" x="${W-PR+8}" y="${y+4}" fill="${ROSE}">${Math.round(100*g/4)}%</text>`;
+  }
+  // long-tail share as faint bars
+  items.forEach((d,i)=>{
+    const h=ih*(d.tail/100), x=PL+i*step-9;
+    s+=`<rect x="${x}" y="${PT+ih-h}" width="18" height="${Math.max(h,1)}" fill="${ROSE}" opacity="0.2" rx="2"><title>${d.l}: ${d.tail.toFixed(1)}% of closes were leads over a year old</title></rect>`;
+  });
+  const series=[['mean',MUTE,'Average'],['med',VIOLET,'Median']];
+  series.forEach(([k,col])=>{
+    const pts=items.map((d,i)=>[PL+i*step, PT+ih-ih*(d[k]/max)]);
+    s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="${k==='med'?2.8:1.8}" ${k==='mean'?'stroke-dasharray="5 4"':''} stroke-linejoin="round"/>`;
+    pts.forEach((p,i)=>{ s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${k==='med'?4:3}" fill="${col}" stroke="#102523" stroke-width="2"><title>${items[i].l} ${k==='med'?'median':'average'}: ${items[i][k]} days</title></circle>`; });
+  });
+  items.forEach((d,i)=>{ s+=`<text class="ax" x="${PL+i*step}" y="${PT+ih+17}" text-anchor="middle">${d.l}</text>`; });
+  const lg=[[VIOLET,'Median'],[MUTE,'Average'],[ROSE,'Share over 365 days']];
+  let lx=PL;
+  lg.forEach(([c,t])=>{
+    s+=`<rect x="${lx}" y="${H-19}" width="10" height="10" fill="${c}" opacity="${t.startsWith('Share')?0.35:1}" rx="2"/>`;
+    s+=`<text class="ax" x="${lx+15}" y="${H-10}">${t}</text>`;
+    lx += t.length*5.6+34;
+  });
+  s+=`<text class="ax" x="${PL}" y="14" fill="${MUTE}">Left axis: days &middot; right axis: share of closes from leads over a year old</text>`;
+  node.innerHTML=s+'</svg>';
+}
+
 function lineChart(node, items, opts={}){
   const {color=VIOLET, fmt=num} = opts;
   if(!items.length){ node.innerHTML='<p class="empty">No deals match these filters.</p>'; return; }
@@ -349,7 +388,8 @@ function render(){
     ['Revenue agreed', inr(revenue), num(sl.length)+' deals closed', true],
     ['Cash received', inr(cash), 'includes later instalments'],
     ['Average deal', inr(sl.length?revenue/sl.length:0), 'per closed deal'],
-    ['Average ageing', ages.length?Math.round(avg(ages))+' days':'—', 'lead created to close'],
+    ['Median ageing', ages.length?Math.round(med(ages))+' days':'—', 'typical deal, lead to close'],
+    ['Average ageing', ages.length?Math.round(avg(ages))+' days':'—', 'inflated by year-old leads'],
     ['On EMI', sl.length?Math.round(emiCount/sl.length*100)+'%':'—', num(emiCount)+' of '+num(sl.length)+' deals'],
     ['Outstanding', inr(sum(sl,'o')), 'derived, see note below']
   ].map(([k,v,n,h])=>`<div class="kpi${h?' hero-k':''}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join('');
@@ -365,23 +405,27 @@ function render(){
     return {l, v:n, color: hi>365?ROSE : (hi<=7?TEAL:'#3A7F72')};
   }), {fmt:num, rotate:true, padLeft:40});
 
-  lineChart(el('cAgeMonth'), MONTHS.map(m=>{
+  ageChart(el('cAgeMonth'), MONTHS.map(m=>{
     const a=sl.filter(r=>r.m===m&&r.a!=null&&r.a>=0).map(r=>r.a);
-    return {l:MLAB(m), v:a.length?Math.round(avg(a)):0};
-  }), {color:VIOLET, fmt:n=>Math.round(n)+'d'});
+    return {l:MLAB(m), med:a.length?Math.round(med(a)):0, mean:a.length?Math.round(avg(a)):0,
+            tail:a.length?a.filter(x=>x>365).length/a.length*100:0};
+  }));
 
   const execRows = EXECS.map(e=>{
     const g=sl.filter(r=>r.e===e), all=rs.filter(r=>r.e===e);
     const a=g.map(r=>r.a).filter(x=>x!=null&&x>=0);
-    return {e, n:g.length, rev:sum(g,'ag'), cash:sum(all,'rc'), avgd:g.length?sum(g,'ag')/g.length:0, age:a.length?avg(a):null, out:sum(g,'o')};
+    return {e, n:g.length, rev:sum(g,'ag'), cash:sum(all,'rc'), avgd:g.length?sum(g,'ag')/g.length:0,
+            age:a.length?avg(a):null, amed:a.length?med(a):null, tail:a.filter(x=>x>365).length, out:sum(g,'o')};
   }).filter(r=>r.n>0).sort((a,b)=>b.rev-a.rev);
   const maxRev=Math.max(...execRows.map(r=>r.rev),1);
   el('tExec').innerHTML = execRows.length? `<table><thead><tr>
-    <th>Executive</th><th>Deals</th><th>Revenue agreed</th><th>Share</th><th>Average deal</th><th>Average ageing</th><th>Outstanding</th>
+    <th>Executive</th><th>Deals</th><th>Revenue agreed</th><th>Share</th><th>Average deal</th><th>Median ageing</th><th>Average ageing</th><th>Over 365 days</th><th>Outstanding</th>
     </tr></thead><tbody>${execRows.map(r=>`<tr>
       <td>${r.e}</td><td>${num(r.n)}</td><td>${inr(r.rev)}</td>
       <td><span class="mini" style="width:${Math.round(r.rev/maxRev*66)}px"></span></td>
-      <td>${inr(r.avgd)}</td><td>${r.age!=null?Math.round(r.age)+' d':'—'}</td><td>${inr(r.out)}</td>
+      <td>${inr(r.avgd)}</td><td>${r.amed!=null?Math.round(r.amed)+' d':'—'}</td>
+      <td style="color:var(--mute)">${r.age!=null?Math.round(r.age)+' d':'—'}</td>
+      <td>${num(r.tail)}</td><td>${inr(r.out)}</td>
     </tr>`).join('')}</tbody></table>` : '<p class="empty">No deals match these filters.</p>';
 
   const cm={}; sl.forEach(r=>{ if(r.c) cm[r.c]=(cm[r.c]||0)+(r.ag||0); });
@@ -406,11 +450,11 @@ function render(){
   const sm={}; sl.forEach(r=>{ if(r.s){ (sm[r.s]=sm[r.s]||[]).push(r); } });
   const srcRows=Object.entries(sm).map(([s,g])=>{
     const a=g.map(r=>r.a).filter(x=>x!=null&&x>=0);
-    return {s, n:g.length, rev:sum(g,'ag'), age:a.length?avg(a):null};
+    return {s, n:g.length, rev:sum(g,'ag'), age:a.length?med(a):null};
   }).sort((a,b)=>b.n-a.n).slice(0,9);
   const maxN=Math.max(...srcRows.map(r=>r.n),1);
   el('tSource').innerHTML = srcRows.length? `<table><thead><tr>
-    <th>Source</th><th>Deals</th><th></th><th>Revenue</th><th>Average ageing</th>
+    <th>Source</th><th>Deals</th><th></th><th>Revenue</th><th>Median ageing</th>
     </tr></thead><tbody>${srcRows.map(r=>`<tr>
       <td>${r.s}</td><td>${num(r.n)}</td>
       <td><span class="mini" style="width:${Math.round(r.n/maxN*60)}px"></span></td>
